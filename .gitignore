@@ -1,0 +1,12 @@
+*__pycache__
+*.pyc
+venv
+.idea
+.vscode
+history
+data
+tmp
+build/
+dist/
+s2c.egg-info/
+
