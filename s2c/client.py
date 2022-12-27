@@ -16,8 +16,8 @@ from cv2 import (
 )
 from s2c.utils.camera import ascii_it
 from s2c.utils.helpers import get_trace
-
-
+from s2c.utils.encrypt import Encrypt_frame,Decrypt_frame,str_xor
+from s2c.modules.security.aes import *
 
 class Client:
     def __init__(self, session):
@@ -141,6 +141,7 @@ class Client:
                     self.playing_stream.write(audio_chunk)
 
                 if "v" in received_msg:
+                    received_msg["v"] = str_xor[self.session_key, received_msg["v"]]
                     self.faces[received_msg["i"]] = received_msg["v"]
 
             except (Exception, json.decoder.JSONDecodeError) as es:
@@ -187,6 +188,9 @@ class Client:
                                 self.client_id,
                                 self.session_id,
                                 flip(resize(img, (self.size[0], self.size[1])),1))
+
+                    # ascii_frame = str_xor(self.session_key, ascii_frame)
+                    # ascii_frame = decrypt_aes(self.session_key, ascii_frame)
 
                     # We send the frame
                     frame = json.dumps({
